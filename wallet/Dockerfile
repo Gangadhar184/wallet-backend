@@ -5,6 +5,9 @@ WORKDIR /app
 
 COPY . .
 
+# Fix permission issue
+RUN chmod +x mvnw
+
 RUN ./mvnw clean package -DskipTests
 
 
@@ -13,10 +16,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-# Copy only the built jar from builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-# Shell form so wildcard works
-CMD java -jar app.jar
+CMD ["java", "-jar", "app.jar"]
